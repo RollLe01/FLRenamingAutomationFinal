@@ -1,11 +1,14 @@
 <Activity mc:Ignorable="sap sap2010" x:Class="Auto_email_after_automation_run" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:um="clr-namespace:UiPath.Mail;assembly=UiPath.Mail.Activities" xmlns:umab="clr-namespace:UiPath.Mail.Activities.Business;assembly=UiPath.Mail.Activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
-    <x:Property Name="In_Masterfile" Type="InArgument(x:String)" />
+    <x:Property Name="In_MasterFolder" Type="InArgument(x:String)" />
+    <x:Property Name="In_RecipientCC" Type="InArgument(x:String)" />
+    <x:Property Name="In_RecipientTo" Type="InArgument(x:String)" />
+    <x:Property Name="IN_SMTPServer" Type="InArgument(x:String)" />
   </x:Members>
   <VisualBasic.Settings>
     <x:Null />
   </VisualBasic.Settings>
-  <sap:VirtualizedContainerService.HintSize>1150,337.3333333333333</sap:VirtualizedContainerService.HintSize>
+  <sap:VirtualizedContainerService.HintSize>1153.3333333333333,1704</sap:VirtualizedContainerService.HintSize>
   <sap2010:WorkflowViewState.IdRef>Auto_email_after_automation_run_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
     <sco:Collection x:TypeArguments="x:String">
@@ -39,6 +42,8 @@
       <x:String>UiPath.Shared.Activities</x:String>
       <x:String>UiPath.Mail.Outlook.Activities</x:String>
       <x:String>System.Reflection</x:String>
+      <x:String>System.Security</x:String>
+      <x:String>UiPath.Mail.SMTP.Activities</x:String>
     </sco:Collection>
   </TextExpression.NamespacesForImplementation>
   <TextExpression.ReferencesForImplementation>
@@ -74,32 +79,76 @@
       <AssemblyReference>System.ObjectModel</AssemblyReference>
       <AssemblyReference>System.Reflection.Metadata</AssemblyReference>
       <AssemblyReference>UiPath.Workflow</AssemblyReference>
+      <AssemblyReference>NPOI</AssemblyReference>
+      <AssemblyReference>System.Memory.Data</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.TypeConverter</AssemblyReference>
+      <AssemblyReference>System.Console</AssemblyReference>
+      <AssemblyReference>System.Configuration.ConfigurationManager</AssemblyReference>
+      <AssemblyReference>System.Security.Permissions</AssemblyReference>
+      <AssemblyReference>System.ComponentModel</AssemblyReference>
+      <AssemblyReference>System.Memory</AssemblyReference>
+      <AssemblyReference>System.Private.Uri</AssemblyReference>
+      <AssemblyReference>System.CodeDom</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualBasic.Forms</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualBasic.Core</AssemblyReference>
+      <AssemblyReference>System.Runtime.InteropServices</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="Auto_email_after_automation_run" sap:VirtualizedContainerService.HintSize="450,272.6666666666667" sap2010:WorkflowViewState.IdRef="Sequence_1">
+  <Sequence DisplayName="Auto_email_after_automation_run" sap:VirtualizedContainerService.HintSize="546,1639.3333333333333" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="x:String" Name="MasterfileToday" />
+      <Variable x:TypeArguments="x:String" Name="DateToday" />
+    </Sequence.Variables>
     <sap:WorkflowViewStateService.ViewState>
       <scg:Dictionary x:TypeArguments="x:String, x:Object">
         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        <x:Boolean x:Key="IsPinned">False</x:Boolean>
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
-    <umab:OutlookApplicationCard Account="{x:Null}" AccountMismatchBehavior="UseDefaultEmailAccount" sap2010:Annotation.AnnotationText="Send an automated email with the attached updated Masterfile once the renaming process is completed by the bot." DisplayName="Use Desktop Outlook App" sap:VirtualizedContainerService.HintSize="484,566" sap2010:WorkflowViewState.IdRef="OutlookApplicationCard_1">
+    <ui:MultipleAssign DisplayName="Multiple Assign" sap:VirtualizedContainerService.HintSize="484,131.33333333333334" sap2010:WorkflowViewState.IdRef="MultipleAssign_1">
+      <ui:MultipleAssign.AssignOperations>
+        <scg:List x:TypeArguments="ui:AssignOperation" Capacity="4">
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_1">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:String">[DateToday]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:String">[Date.Now.ToString("MMddyyyy")]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_2">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:String">[MasterfileToday]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:String">[In_MasterFolder + DateToday + "\" + DateToday + ".xlsx"]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+        </scg:List>
+      </ui:MultipleAssign.AssignOperations>
+    </ui:MultipleAssign>
+    <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="484,144.66666666666666" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="[UiPath.Core.Activities.LogLevel.Info]" Message="[&quot;Sending post-automation email.&quot;]" />
+    <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" ContinueOnError="{x:Null}" Email="{x:Null}" MailMessage="{x:Null}" Password="{x:Null}" ReplyTo="{x:Null}" Result="{x:Null}" SecurePassword="{x:Null}" TimeoutMS="{x:Null}" UseOAuth="{x:Null}" Body="[&quot;&lt;html&gt;&lt;body&gt;&quot; &amp;&#xA;&quot;=========================================================================================================================&quot; &amp; &quot;&lt;br/&gt;&quot; &amp;&#xA;&quot;This message has been auto-generated. Please do not reply as this email address is not monitored.&quot; &amp; &quot;&lt;br/&gt;&quot; &amp;&#xA;&quot;This is to notify you that the RPA bot completed its run at &quot; &amp; Now.ToString(&quot;MM-dd-yyyy HH:mm:ss&quot;) &amp; &quot;.&quot; &amp; &quot;&lt;br/&gt;&quot; &amp;&#xA;&quot;=========================================================================================================================&quot; &amp; &quot;&lt;br/&gt;&lt;br/&gt;&quot; &amp;&#xA;&quot;&lt;font color='red'&gt;&lt;b&gt;Hello POCs,&lt;br/&gt;&quot; &amp;&#xA;&quot;Kindly wait at least an hour for the processed files to fully sync in the SharePoint folder before moving them to your shared drive. Thank you!&lt;/b&gt;&lt;/font&gt;&quot; &amp; &quot;&lt;br/&gt;&lt;br/&gt;&quot; &amp;&#xA;&quot;=========================================================================================================================&quot; &amp; &quot;&lt;br/&gt;&quot; &amp;&#xA;&quot;Please send any support-related email to lester.rollan@lexisnexisrisk.com.&quot; &amp;&#xA;&quot;&lt;/body&gt;&lt;/html&gt;&quot;]" DisplayName="Send SMTP Mail Message" EnableSSL="True" From="[Environment.UserName + &quot;@lexisnexisrisk.com&quot;]" sap:VirtualizedContainerService.HintSize="484,302" sap2010:WorkflowViewState.IdRef="SendMail_1" IgnoreCRL="False" IsBodyHtml="True" Name="[Environment.UserName]" Port="25" SecureConnection="None" Server="[In_SMTPServer]" Subject="RPA for Florida Renaming Automation has been COMPLETED" To="[In_RecipientTo]">
+      <ui:SendMail.Files>
+        <scg:List x:TypeArguments="InArgument(x:String)" Capacity="0" />
+      </ui:SendMail.Files>
+    </ui:SendMail>
+    <umab:OutlookApplicationCard Account="{x:Null}" AccountMismatchBehavior="UseDefaultEmailAccount" sap2010:Annotation.AnnotationText="Send an automated email with the attached updated Masterfile once the renaming process is completed by the bot." DisplayName="Use Desktop Outlook App" sap:VirtualizedContainerService.HintSize="484,646" sap2010:WorkflowViewState.IdRef="OutlookApplicationCard_1">
       <umab:OutlookApplicationCard.Body>
         <ActivityAction x:TypeArguments="um:IMailQuickHandle">
           <ActivityAction.Argument>
             <DelegateInArgument x:TypeArguments="um:IMailQuickHandle" Name="Outlook" />
           </ActivityAction.Argument>
-          <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="450,332.6666666666667" sap2010:WorkflowViewState.IdRef="Sequence_2">
+          <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="450,412.6666666666667" sap2010:WorkflowViewState.IdRef="Sequence_2">
             <sap:WorkflowViewStateService.ViewState>
               <scg:Dictionary x:TypeArguments="x:String, x:Object">
                 <x:Boolean x:Key="IsExpanded">True</x:Boolean>
               </scg:Dictionary>
             </sap:WorkflowViewStateService.ViewState>
-            <ui:SendOutlookMail Account="{x:Null}" Bcc="{x:Null}" ContinueOnError="{x:Null}" MailMessage="{x:Null}" ReplyTo="{x:Null}" TimeoutMS="{x:Null}" Body="[&quot;==========================================================================&quot; &amp; vbCrLf &amp;&#xA;&quot;This message has been auto-generated. Please do not reply as this email address is not monitored.&quot; &amp; vbCrLf &amp;&#xA;&quot;This is to notify you that the RPA bot completed its run at &quot; &amp; Now.ToString(&quot;MM-dd-yyyy HH:mm:ss&quot;) &amp; &quot;.&quot; &amp; vbCrLf &amp;&#xA;&quot;==========================================================================&quot; &amp; vbCrLf &amp;&#xA;&quot;Please send any support-related email to rpa.coe@lexisnexisrisk.com.&quot;]" Cc="dindee.galindo@lexisnexisrisk.com; jesriel.tolentino@lexisnexisrisk.com; jhoanna.talle@lexisnexisrisk.com; lester.rollan@lexisnexisrisk.com" DisplayName="Send Outlook Mail Message" sap:VirtualizedContainerService.HintSize="388,222" sap2010:WorkflowViewState.IdRef="SendOutlookMail_1" Importance="Normal" IsBodyHtml="False" IsDraft="False" Sensitivity="Normal" Subject="RPA for Florida Renaming Automation has been COMPLETED" To="sam.tecson@lexisnexisrisk.com; joavic.quisano@lexisnexisrisk.com">
+            <ui:SendOutlookMail Account="{x:Null}" Bcc="{x:Null}" ContinueOnError="{x:Null}" MailMessage="{x:Null}" ReplyTo="{x:Null}" TimeoutMS="{x:Null}" Body="[&quot;&lt;html&gt;&lt;body&gt;&quot; &amp;&#xA;&quot;=========================================================================================================================&quot; &amp; &quot;&lt;br/&gt;&quot; &amp;&#xA;&quot;This message has been auto-generated. Please do not reply as this email address is not monitored.&quot; &amp; &quot;&lt;br/&gt;&quot; &amp;&#xA;&quot;This is to notify you that the RPA bot completed its run at &quot; &amp; Now.ToString(&quot;MM-dd-yyyy HH:mm:ss&quot;) &amp; &quot;.&quot; &amp; &quot;&lt;br/&gt;&quot; &amp;&#xA;&quot;=========================================================================================================================&quot; &amp; &quot;&lt;br/&gt;&lt;br/&gt;&quot; &amp;&#xA;&quot;&lt;font color='red'&gt;&lt;b&gt;Hello POCs,&lt;br/&gt;&quot; &amp;&#xA;&quot;Kindly wait at least an hour for the processed files to fully sync in the SharePoint folder before moving them to your shared drive. Thank you!&lt;/b&gt;&lt;/font&gt;&quot; &amp; &quot;&lt;br/&gt;&lt;br/&gt;&quot; &amp;&#xA;&quot;=========================================================================================================================&quot; &amp; &quot;&lt;br/&gt;&quot; &amp;&#xA;&quot;Please send any support-related email to lester.rollan@lexisnexisrisk.com.&quot; &amp;&#xA;&quot;&lt;/body&gt;&lt;/html&gt;&quot;]" Cc="[In_RecipientCC]" DisplayName="Send Outlook Mail Message" sap:VirtualizedContainerService.HintSize="388,302" sap2010:WorkflowViewState.IdRef="SendOutlookMail_1" Importance="High" IsBodyHtml="True" IsDraft="False" Sensitivity="Normal" Subject="RPA for Florida Renaming Automation has been COMPLETED" To="[In_RecipientTo]">
               <ui:SendOutlookMail.Files>
                 <scg:List x:TypeArguments="InArgument(x:String)" Capacity="4">
-                  <InArgument x:TypeArguments="x:String">
-                    <VisualBasicValue x:TypeArguments="x:String" ExpressionText="In_MasterFile" />
-                  </InArgument>
+                  <InArgument x:TypeArguments="x:String">[MasterfileToday]</InArgument>
                 </scg:List>
               </ui:SendOutlookMail.Files>
             </ui:SendOutlookMail>
@@ -109,10 +158,11 @@
       <sap:WorkflowViewStateService.ViewState>
         <scg:Dictionary x:TypeArguments="x:String, x:Object">
           <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
-          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           <x:Boolean x:Key="IsPinned">False</x:Boolean>
         </scg:Dictionary>
       </sap:WorkflowViewStateService.ViewState>
     </umab:OutlookApplicationCard>
+    <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="484,144.66666666666666" sap2010:WorkflowViewState.IdRef="LogMessage_2" Level="[UiPath.Core.Activities.LogLevel.Info]" Message="[&quot;Successfully sent post-automation email.&quot;]" />
   </Sequence>
 </Activity>
