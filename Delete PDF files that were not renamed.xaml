@@ -37,6 +37,8 @@
       <x:String>GlobalConstantsNamespace</x:String>
       <x:String>System.Reflection</x:String>
       <x:String>UiPath.Platform.ResourceHandling</x:String>
+      <x:String>System.Linq.Expressions</x:String>
+      <x:String>System.Runtime.Serialization</x:String>
     </sco:Collection>
   </TextExpression.NamespacesForImplementation>
   <TextExpression.ReferencesForImplementation>
@@ -79,9 +81,16 @@
       <AssemblyReference>System.IO.Packaging</AssemblyReference>
       <AssemblyReference>System.IO.FileSystem.AccessControl</AssemblyReference>
       <AssemblyReference>System.IO.FileSystem.DriveInfo</AssemblyReference>
+      <AssemblyReference>System.Private.ServiceModel</AssemblyReference>
+      <AssemblyReference>System.Collections</AssemblyReference>
+      <AssemblyReference>System.Collections.NonGeneric</AssemblyReference>
+      <AssemblyReference>System.Linq.Expressions</AssemblyReference>
+      <AssemblyReference>System.Private.DataContractSerialization</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization.Formatters</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization.Primitives</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="File_Deletion_Workflow" sap:VirtualizedContainerService.HintSize="548,1735" sap2010:WorkflowViewState.IdRef="Sequence_1">
+  <Sequence DisplayName="File_Deletion_Workflow" sap:VirtualizedContainerService.HintSize="885.9999999999999,1518.6666666666667" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <Sequence.Variables>
       <Variable x:TypeArguments="s:String[]" Name="RemovePDF" />
       <Variable x:TypeArguments="x:String" Name="DateToday" />
@@ -91,8 +100,8 @@
         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
-    <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="486,141" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="[UiPath.Core.Activities.LogLevel.Info]" Message="[&quot;Deleting unrenamed files in the DONE folder.&quot;]" />
-    <ui:MultipleAssign sap2010:Annotation.AnnotationText="Create a variable to identify PDF files that have been moved to the &quot;DONE&quot; folder without being renamed and need to be deleted from the folder." DisplayName="Multiple Assign" sap:VirtualizedContainerService.HintSize="486,251" sap2010:WorkflowViewState.IdRef="MultipleAssign_1">
+    <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="486,176.66666666666666" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="[UiPath.Core.Activities.LogLevel.Info]" Message="[&quot;Deleting unrenamed files in the DONE folder.&quot;]" />
+    <ui:MultipleAssign sap2010:Annotation.AnnotationText="Create a variable to identify PDF files that have been moved to the &quot;DONE&quot; folder without being renamed and need to be deleted from the folder." DisplayName="Multiple Assign" sap:VirtualizedContainerService.HintSize="422.6666666666667,254.66666666666663" sap2010:WorkflowViewState.IdRef="MultipleAssign_1">
       <ui:MultipleAssign.AssignOperations>
         <scg:List x:TypeArguments="ui:AssignOperation" Capacity="8">
           <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_1">
@@ -103,12 +112,12 @@
               <InArgument x:TypeArguments="x:String">[Now.ToString("MMddyyyy")]</InArgument>
             </ui:AssignOperation.Value>
           </ui:AssignOperation>
-          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_2">
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_5">
             <ui:AssignOperation.To>
-              <OutArgument x:TypeArguments="x:Object">[In_FlobotFolder]</OutArgument>
+              <OutArgument x:TypeArguments="x:String">[In_FlobotFolder]</OutArgument>
             </ui:AssignOperation.To>
             <ui:AssignOperation.Value>
-              <InArgument x:TypeArguments="x:Object">[In_MasterFolder &amp; DateToday]</InArgument>
+              <InArgument x:TypeArguments="x:String">[In_MasterFolder &amp; DateToday]</InArgument>
             </ui:AssignOperation.Value>
           </ui:AssignOperation>
           <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_3">
